@@ -7,6 +7,8 @@ lastName=$2;
 pool=$3;
 prefix=$4
 
+cd /users/gesell/Projects;
+
 #make the necessary directory structures
 mkdir ${firstName}${lastName};
 mkdir ${firstName}${lastName}/Pool${pool};
