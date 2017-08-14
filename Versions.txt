@@ -1,0 +1,11 @@
+List of Programs used in this pipeline:
+Bowtie2 (http://bowtie-bio.sourceforge.net/bowtie2/index.shtml)
+GNU Parallel (https://www.gnu.org/software/parallel/)
+pbzip2 (http://compression.ca/pbzip2/)
+Perl v5.16.2 (https://metacpan.org/release/RJBS/perl-5.16.2)
+Phyloseq v1.16.2 (https://joey711.github.io/phyloseq/install)
+R v3.0.2 (https://cran.r-project.org/bin/windows/base/old/3.0.2/)
+Silva v128 (https://www.arb-silva.de/documentation/release-128/)
+Usearch v1.7 (http://www.drive5.com/Usearch/)
+Usearch v 1.8 (http://www.drive5.com/Usearch/)
+Genbank Eukaryotes Database (https://www.ncbi.nlm.nih.gov/genbank/)

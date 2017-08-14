@@ -425,15 +425,17 @@ sub concatenateReads {
 	my @compressFiles;
 	foreach my $sample (keys %samplesToBarcodes) {
 		system("echo $sample >> $workDir/SampleList");
-		my $cmd = "zcat $projDir/Project_$projName/Sample_$sample/${sample}_$samplesToBarcodes{$sample}_L00${lane}_R1_001.fastq.gz | tee $projDir/Project_$projName/Sample_$sample/${sample}_$samplesToBarcodes{$sample}_L00${lane}_R1_001.fastq | sed 's/1:N:0:.*/1:N:0:/g' | grep \"^\@HWI\" | wc -l";
+		my $cmd = "zcat $projDir/Project_$projName/Sample_$sample/${sample}_$samplesToBarcodes{$sample}_L00${lane}_R1_001.fastq.gz | tee $projDir/Project_$projName/Sample_$sample/${sample}_$samplesToBarcodes{$sample}_L00${lane}_R1_001.fastq | wc -l";		
+#my $cmd = "zcat $projDir/Project_$projName/Sample_$sample/${sample}_$samplesToBarcodes{$sample}_L00${lane}_R1_001.fastq.gz | tee $projDir/Project_$projName/Sample_$sample/${sample}_$samplesToBarcodes{$sample}_L00${lane}_R1_001.fastq | sed 's/1:N:0:.*/1:N:0:/g' | grep \"^\@HWI\" | wc -l";
 		my $cmd2 = "zcat $projDir/Project_$projName/Sample_$sample/${sample}_$samplesToBarcodes{$sample}_L00${lane}_R2_001.fastq.gz > $projDir/Project_$projName/Sample_$sample/${sample}_$samplesToBarcodes{$sample}_L00${lane}_R2_001.fastq";
 		my $output = capture($cmd);
+		$output = $output / 4;
 		system($cmd2);
 		$cmd = "rm $projDir/Project_$projName/Sample_$sample/${sample}_$samplesToBarcodes{$sample}_L00${lane}_R1_001.fastq.gz $projDir/Project_$projName/Sample_$sample/${sample}_$samplesToBarcodes{$sample}_L00${lane}_R2_001.fastq.gz";
 		system($cmd);
 		push @compressFiles, "$projDir/Project_$projName/Sample_$sample/${sample}_$samplesToBarcodes{$sample}_L00${lane}_R1_001.fastq";
 		push @compressFiles, "$projDir/Project_$projName/Sample_$sample/${sample}_$samplesToBarcodes{$sample}_L00${lane}_R2_001.fastq";
-		print COUNT "$sample\t$output";
+		print COUNT "$sample\t$output\n";
 		$links{"${readDir}/${sample}.1.fq.bz2"} = "$projDir/Project_$projName/Sample_$sample/${sample}_$samplesToBarcodes{$sample}_L00${lane}_R1_001.fastq.bz2";
 		$links{"${readDir}/${sample}.2.fq.bz2"} = "$projDir/Project_$projName/Sample_$sample/${sample}_$samplesToBarcodes{$sample}_L00${lane}_R2_001.fastq.bz2";
 	}
@@ -460,7 +462,7 @@ sub getPhiXPercRaw {
 	my $threads = $_[3];
 	
 	#database shouldn't be hardcoded.
-	my $cmd = "bowtie2 -x /stornext/snfs7/cmmr/references/phix/phix -U $read1,$read2 --end-to-end --very-sensitive --reorder -p $threads -S /dev/null 2>Logs/$projectName.phixOverall.stats.txt";
+	my $cmd = "bowtie2 -x \${PHIXDB} -U $read1,$read2 --end-to-end --very-sensitive --reorder -p $threads -S /dev/null 2>Logs/$projectName.phixOverall.stats.txt";
 	system($cmd);
 }
 
@@ -472,7 +474,7 @@ sub getPhiXPercBleed {
 	my $threads = $_[1];
 	my $projectName = $_[2];
 	#database shouldn't be hardcoded.
-	my $cmd = "bowtie2 -x /stornext/snfs7/cmmr/references/phix/phix -1 $workDir/Read1.fq -2 $workDir/Read2.fq --end-to-end --very-sensitive --reorder -p $threads -S /dev/null --un-conc $workDir/Reads.filtered.fq 2>Logs/$projectName.phix.bleed.stats";
+	my $cmd = "bowtie2 -x \${PHIXDB} -1 $workDir/Read1.fq -2 $workDir/Read2.fq --end-to-end --very-sensitive --reorder -p $threads -S /dev/null --un-conc $workDir/Reads.filtered.fq 2>Logs/$projectName.phix.bleed.stats";
 	system($cmd);
 	$cmd = "rm $workDir/Read1.fq $workDir/Read2.fq";
 	system($cmd);
